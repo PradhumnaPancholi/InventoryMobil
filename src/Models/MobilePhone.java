@@ -2,13 +2,20 @@ package Models;
 
 import javafx.scene.image.Image;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class MobilePhone {
     private String make, model, os;
     private double screenSize, memory, frontCameraRes, rearCameraRes, price;
     private Image phoneImage;
 
     public MobilePhone(String make, String model, String os) {
-        setMake(make);
+        try {
+            setMake(make);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         setModel(model);
         setOs(os);
     }
@@ -28,8 +35,14 @@ public class MobilePhone {
         return make;
     }
 
-    public void setMake(String make) {
-        this.make = make;
+    public void setMake(String make) throws SQLException {
+        ArrayList<String> validMakes = DBConnect.getPhoneManufacturers();
+
+        if (validMakes.contains(make))
+            this.make = make;
+        else
+            throw new IllegalArgumentException("Valid makes are: "+validMakes);
+
     }
 
     public String getModel() {
